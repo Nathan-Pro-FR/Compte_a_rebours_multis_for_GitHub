@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom Multi-Countdown & Progress</title>
+
+<!-- DEBUT DU STYLES-->
+    <style>
+        :root {
+            --bloom-pink: #ffafbd;
+            --bloom-blue: #c9ffbf;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(-45deg, #ffafbd, #ffc3a0, #2193b0, #6dd5ed);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Cadre Style Liquide Apple */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            width: 85%;
+            max-width: 550px;
+        }
+
+        h2 { font-weight: 300; margin-bottom: 15px; }
+
+        /* Menu de sélection stylisé */
+        select {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            cursor: pointer;
+            outline: none;
+            backdrop-filter: blur(5px);
+            -webkit-appearance: none;
+        }
+
+        select option {
+            background: #ff80ab;
+            color: white;
+        }
+
+        /* Barre de progression style "Liquid" */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.5s ease-out, background-color 0.5s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        #percentageText {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .time-segment {
+            flex: 1;
+            padding: 15px 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+    </style>
+<!--FIN DU STYLES-->
+</head>
+
+<body>
+
+    <div class="glass-card">
+        <h2 id="title">Prochain objectif :</h2>
+        <!--Pour ajouter un compte à rebours, il faut mettre sous ce format :
+            <option value="AAAA-MM-JJ">Nom du compte à rebours</option>-->
+
+        <select id="eventSelector" onchange="changeTarget()">
+            <option value="2026-02-21">Vacances d'Hiver (Zone C)</option>
+            <option value="2026-04-18">Vacances de Printemps (Zone C)</option>
+            <option value="2026-05-01">Fête du Travail (1er Mai)</option>
+            <option value="2026-05-08">Victoire de 1945</option>
+            <option value="2026-05-14">Pont de l'Ascension</option>
+            <option value="2026-07-04">Grandes Vacances ☀️</option>
+        </select>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="percentageText">Chargement...</div>
+
+        <div class="timer">
+            <div class="time-segment">
+                <span class="number" id="days">00</span>
+                <span class="label">Jours</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="hours">00</span>
+                <span class="label">Heures</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Min</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Sec</span>
+            </div>
+        </div>
+    </div>
+
+<!--DEBUT DU SCRIPT-->
+    <script>
+        let countdownInterval;
+        let targetDate;
+
+        function changeTarget() {
+            const selector = document.getElementById('eventSelector');
+            const selectedDate = selector.value;
+            targetDate = new Date(selectedDate + "T00:00:00").getTime();
+            
+            clearInterval(countdownInterval);
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            // --- Logique du Pourcentage (Base 1er Septembre) ---
+            let currentYear = new Date().getFullYear();
+            // Si on est entre Janvier et Août, l'année scolaire a commencé l'année d'avant
+            if (new Date().getMonth() < 8) currentYear--; 
+            const startDate = new Date(currentYear, 8, 1).getTime(); 
+
+            const totalDuration = targetDate - startDate;
+            let percentage = ((now - startDate) / totalDuration) * 100;
+            percentage = Math.max(0, Math.min(100, percentage)); // On bloque entre 0 et 100
+
+            // --- Changement de couleur dynamique (Bleu -> Rose Fuchsia) ---
+            // On joue sur la teinte (Hue) : Bleu est vers 200, Fuchsia vers 320
+            const hue = 200 + (percentage * 1.2); 
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage.toFixed(2) + '%';
+            progressBar.style.backgroundColor = `hsl(${hue}, 100%, 75%)`;
+            progressBar.style.boxShadow = `0 0 15px hsl(${hue}, 100%, 70%)`;
+
+            // Pour changer de nombre suivie d''un . dans le pourcentage, 
+            // il suffit de remplacer le "ici" par un nombre dans : 
+            // "${percentage.toFixed(ici)}". (Par défaut : 1)
+            document.getElementById('percentageText').innerText = `L'objectif est complétée à ${percentage.toFixed(1)}% ✨ !`;
+
+            // --- Logique du Compte à rebours ---
+            if (diff <= 0) {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                document.getElementById('percentageText').innerText = "C'est le moment ! 🎉";
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
+        changeTarget();
+    </script>
+<!--FIN DU SCRIPT-->
+
+</body>
+</html>

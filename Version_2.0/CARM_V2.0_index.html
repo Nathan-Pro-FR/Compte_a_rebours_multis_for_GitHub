@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom Multi-Countdown & Progress</title>
+    <link rel="stylesheet" href="CARM_V2.0_style.css">
+</head>
+<body>
+
+    <div class="glass-card">
+        <h2 id="title">Prochain objectif :</h2>
+        
+        <select id="eventSelector" onchange="changeTarget()">
+          <!--Pour ajouter des nouvelles évènements lisez le README.md-->
+            <option value="2026-02-21">Vacances d'Hiver (Zone C)</option>
+            <option value="2026-04-18">Vacances de Printemps (Zone C)</option>
+            <option value="2026-05-01">Fête du Travail (1er Mai)</option>
+            <option value="2026-05-08">Victoire de 1945</option>
+            <option value="2026-05-14">Pont de l'Ascension</option>
+            <option value="2026-07-04">Grandes Vacances ☀️</option>
+            
+        </select>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="percentageText">Calcul de la magie en cours...</div>
+
+        <div class="timer">
+            <div class="time-segment">
+                <span class="number" id="days">00</span>
+                <span class="label">Jours</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="hours">00</span>
+                <span class="label">Heures</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Min</span>
+            </div>
+            <div class="time-segment">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Sec</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="CARM_V2.0_script.js"></script>
+</body>
+</html>

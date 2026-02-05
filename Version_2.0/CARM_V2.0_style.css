@@ -1,0 +1,118 @@
+/* Variables de couleurs inspirées par Bloom (Winx Club) */
+:root {
+    --bloom-pink: #ffafbd;
+    --bloom-blue: #c9ffbf;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    /* Dégradé animé en arrière-plan */
+    background: linear-gradient(-45deg, #ffafbd, #ffc3a0, #2193b0, #6dd5ed);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: white;
+    overflow: hidden;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Cadre avec effet de flou "Glassmorphism" (Apple Style) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 40px;
+    padding: 2.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    width: 85%;
+    max-width: 550px;
+}
+
+h2 { font-weight: 300; margin-bottom: 15px; }
+
+/* Sélecteur stylisé sans flèche par défaut */
+select {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    cursor: pointer;
+    outline: none;
+    backdrop-filter: blur(5px);
+    -webkit-appearance: none;
+}
+
+select option {
+    background: #ff80ab;
+    color: white;
+}
+
+/* Barre de progression fluide */
+.progress-container {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    /* Transition fluide pour le changement de largeur et de couleur */
+    transition: width 0.5s ease-out, background-color 0.5s ease;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+#percentageText {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.time-segment {
+    flex: 1;
+    padding: 15px 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    display: block;
+}
+
+.label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
