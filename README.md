@@ -46,6 +46,12 @@ Pour ajouter vos propres dates, modifiez les balises **`<option>`** dans le **fi
 
 ---
 
+## 💬 ME CONTACTER :
+:discord: Discord : @Nathanfurry_lax
+:telegram: Telegram : @Nathanfurry_lax
+
+---
+
 ### ***PATCH NOTE :***
 
 #### **Prochaine mise à jour :**
